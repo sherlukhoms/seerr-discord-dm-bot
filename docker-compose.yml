@@ -1,0 +1,11 @@
+services:
+  seerr-discord-dm-bot:
+    build: .
+    container_name: seerr-discord-dm-bot
+    restart: unless-stopped
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+      PORT: 3000
+    ports:
+      - "3000:3000"

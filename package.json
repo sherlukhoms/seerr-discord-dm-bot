@@ -1,0 +1,14 @@
+{
+  "name": "seerr-discord-dm-bot",
+  "version": "1.0.0",
+  "description": "Empfaengt Seerr-Webhooks und sendet Discord-Benachrichtigungen per PM an den jeweiligen User",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
