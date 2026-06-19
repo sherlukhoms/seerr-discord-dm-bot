@@ -96,6 +96,7 @@ app.post('/seerr-webhook', async (req, res) => {
   }
 
   console.log(`[Webhook] Received: ${payload.notification_type} - ${payload.subject}`);
+  console.log('[Webhook] Raw payload (debug):', JSON.stringify(payload));
 
   const discordIds = extractDiscordIds(payload);
 
