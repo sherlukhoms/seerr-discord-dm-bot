@@ -59,6 +59,23 @@ one above.
 
 ## 3. Deploy
 
+`WEBHOOK_SECRET` isn't issued by Discord or Seerr — it's just a random
+string you make up yourself, used to verify that incoming webhook calls
+actually come from your Seerr instance. Generate one with:
+
+```powershell
+# PowerShell
+-join ((48..57)+(65..90)+(97..122)|Get-Random -Count 32|%{[char]$_})
+```
+
+```bash
+# Node.js (also works inside the container)
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Use the same value in both places it's needed: the bot's `WEBHOOK_SECRET`
+environment variable, and Seerr's webhook **Authorization Header** (step 4).
+
 **Recommended: add it to your existing Portainer stack** (e.g. the same
 stack as Radarr/Sonarr/Seerr). Add this service block:
 
