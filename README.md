@@ -1,5 +1,7 @@
 # Seerr Discord DM Bot
 
+Repo: https://github.com/sherlukhoms/seerr-discord-dm-bot
+
 Receives Seerr webhook notifications and sends them as a direct message (DM)
 to the respective requesting user — instead of posting them publicly in a
 text channel.
@@ -33,6 +35,7 @@ server where your existing Seerr notifications already run.
 If you want to run/test the bot directly instead of via Docker:
 
 ```bash
+git clone https://github.com/sherlukhoms/seerr-discord-dm-bot.git
 cd seerr-discord-dm-bot
 cp .env.example .env
 # fill in DISCORD_BOT_TOKEN, optionally WEBHOOK_SECRET
@@ -96,7 +99,7 @@ of building from source.
 
 ```yaml
   seerr-discord-dm-bot:
-    image: ghcr.io/<github-username>/seerr-discord-dm-bot:latest
+    image: ghcr.io/sherlukhoms/seerr-discord-dm-bot:latest
     container_name: seerr-discord-dm-bot
     restart: unless-stopped
     environment:
@@ -107,7 +110,7 @@ of building from source.
       - "3000:3000"
 ```
 
-   Replace `<github-username>` with your GitHub username, lowercase.
+   This points to the image built automatically by the GitHub Action above.
 
 4. In the stack's **Environment variables** section (this exists for all
    stack types in Portainer, not just Git-based ones), add `DISCORD_BOT_TOKEN`
