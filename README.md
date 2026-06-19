@@ -133,6 +133,12 @@ the bot just logs a warning and moves on.
 This tab only appears if the admin-level Discord agent is enabled — see the
 note in step 4.
 
+To find their own Discord User ID, each user needs to enable **Developer
+Mode** first: in Discord, go to **User Settings → Advanced** (near the
+bottom of the settings list) → toggle on **Developer Mode**. Then
+right-click their own username/avatar anywhere in Discord → **Copy User
+ID**, and paste that into Seerr.
+
 ## Notes
 
 - `{{image}}` usually returns a full poster URL (TMDB image) from Seerr.
