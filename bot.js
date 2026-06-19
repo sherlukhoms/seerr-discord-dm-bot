@@ -43,12 +43,12 @@ function buildEmbed(payload) {
   embed.addFields(
     {
       name: 'Requested By',
-      value: payload.requestedBy_username || 'Unknown',
+      value: payload.request?.requestedBy_username || 'Unknown',
       inline: true,
     },
     {
       name: 'Request Status',
-      value: payload.media_status || payload.event || 'Unknown',
+      value: payload.media?.status || payload.event || 'Unknown',
       inline: true,
     }
   );
@@ -60,11 +60,14 @@ function buildEmbed(payload) {
   return embed;
 }
 
-// Handles both the current Seerr default (singular "requestedBy_discordId" as
-// a plain string) and the array-based "requestedBy_discordIds" described in
-// newer Seerr docs, in case that ever lands in your deployed version.
+// Reads the Discord ID(s) of the requesting user from Seerr's nested
+// "request" object (Seerr's stock default webhook payload). Handles both
+// the array form ("requestedBy_settings_discordIds") and, defensively, an
+// older/singular form some payload variants may use.
 function extractDiscordIds(payload) {
-  const raw = payload.requestedBy_discordId ?? payload.requestedBy_discordIds;
+  const raw =
+    payload.request?.requestedBy_settings_discordIds ??
+    payload.request?.requestedBy_settings_discordId;
 
   if (!raw) return [];
   if (Array.isArray(raw)) return raw.filter(Boolean);
