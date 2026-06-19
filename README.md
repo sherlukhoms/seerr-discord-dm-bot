@@ -65,7 +65,7 @@ actually come from your Seerr instance. Generate one with:
 
 ```powershell
 # PowerShell
--join ((48..57)+(65..90)+(97..122)|Get-Random -Count 32|%{[char]$_})
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ```bash
