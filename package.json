@@ -1,7 +1,7 @@
 {
   "name": "seerr-discord-dm-bot",
   "version": "1.0.0",
-  "description": "Empfaengt Seerr-Webhooks und sendet Discord-Benachrichtigungen per PM an den jeweiligen User",
+  "description": "Receives Seerr webhooks and sends Discord DMs to the respective requesting user",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js"
