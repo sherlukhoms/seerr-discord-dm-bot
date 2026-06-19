@@ -1,114 +1,41 @@
-require('dotenv').config();
-const express = require('express');
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
-
-const app = express();
-app.use(express.json());
-
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds],
-});
-
-client.once('ready', () => {
-  console.log(`[Bot] Logged in as ${client.user.tag}`);
-});
-
-client.login(process.env.DISCORD_BOT_TOKEN);
-
-// Colors mirroring Seerr's own Discord embeds
-const STATUS_COLORS = {
-  'Request Approved': 0x2ecc71,
-  'Request Declined': 0xe74c3c,
-  'Request Pending Approval': 0xf1c40f,
-  'Request Automatically Approved': 0x2ecc71,
-  'Media Available': 0x3498db,
-  'Request Processing Failed': 0xe74c3c,
-  default: 0x95a5a6,
-};
-
-function buildEmbed(payload) {
-  const title = payload.subject
-    ? `${payload.event}: ${payload.subject}`
-    : payload.event;
-
-  const embed = new EmbedBuilder()
-    .setTitle(title)
-    .setColor(STATUS_COLORS[payload.event] || STATUS_COLORS.default)
-    .setTimestamp();
-
-  if (payload.message) {
-    embed.setDescription(payload.message);
-  }
-
-  embed.addFields(
-    {
-      name: 'Requested By',
-      value: payload.requestedBy_username || 'Unknown',
-      inline: true,
-    },
-    {
-      name: 'Request Status',
-      value: payload.media_status || payload.event || 'Unknown',
-      inline: true,
-    }
-  );
-
-  if (payload.image) {
-    embed.setThumbnail(payload.image);
-  }
-
-  return embed;
+{
+  "notification_type": "{{notification_type}}",
+  "event": "{{event}}",
+  "subject": "{{subject}}",
+  "message": "{{message}}",
+  "image": "{{image}}",
+  "{{media}}": {
+    "media_type": "{{media_type}}",
+    "tmdbId": "{{media_tmdbid}}",
+    "tvdbId": "{{media_tvdbid}}",
+    "status": "{{media_status}}",
+    "status4k": "{{media_status4k}}"
+  },
+  "{{request}}": {
+    "request_id": "{{request_id}}",
+    "requestedBy_email": "{{requestedBy_email}}",
+    "requestedBy_username": "{{requestedBy_username}}",
+    "requestedBy_avatar": "{{requestedBy_avatar}}",
+    "requestedBy_settings_discordId": "{{requestedBy_settings_discordId}}",
+    "requestedBy_settings_telegramChatId": "{{requestedBy_settings_telegramChatId}}"
+  },
+  "{{issue}}": {
+    "issue_id": "{{issue_id}}",
+    "issue_type": "{{issue_type}}",
+    "issue_status": "{{issue_status}}",
+    "reportedBy_email": "{{reportedBy_email}}",
+    "reportedBy_username": "{{reportedBy_username}}",
+    "reportedBy_avatar": "{{reportedBy_avatar}}",
+    "reportedBy_settings_discordId": "{{reportedBy_settings_discordId}}",
+    "reportedBy_settings_telegramChatId": "{{reportedBy_settings_telegramChatId}}"
+  },
+  "{{comment}}": {
+    "comment_message": "{{comment_message}}",
+    "commentedBy_email": "{{commentedBy_email}}",
+    "commentedBy_username": "{{commentedBy_username}}",
+    "commentedBy_avatar": "{{commentedBy_avatar}}",
+    "commentedBy_settings_discordId": "{{commentedBy_settings_discordId}}",
+    "commentedBy_settings_telegramChatId": "{{commentedBy_settings_telegramChatId}}"
+  },
+  "{{extra}}": []
 }
-
-app.post('/seerr-webhook', async (req, res) => {
-  // Optional protection via shared secret (see .env.example)
-  if (process.env.WEBHOOK_SECRET) {
-    const auth = req.headers['authorization'];
-    if (auth !== process.env.WEBHOOK_SECRET) {
-      console.warn('[Webhook] Unauthorized request rejected.');
-      return res.status(401).send('Unauthorized');
-    }
-  }
-
-  const payload = req.body;
-
-  // Test notification from the Seerr settings page -> just acknowledge
-  if (payload.notification_type === 'TEST_NOTIFICATION') {
-    console.log('[Webhook] Test notification received.');
-    return res.sendStatus(200);
-  }
-
-  console.log(`[Webhook] Received: ${payload.notification_type} - ${payload.subject}`);
-
-  const discordIds = Array.isArray(payload.requestedBy_discordIds)
-    ? payload.requestedBy_discordIds
-    : [];
-
-  if (discordIds.length === 0) {
-    console.warn(
-      '[Webhook] No Discord ID found (user likely has not linked Discord in Seerr).'
-    );
-    return res.sendStatus(200);
-  }
-
-  const embed = buildEmbed(payload);
-
-  for (const discordId of discordIds) {
-    try {
-      const user = await client.users.fetch(discordId);
-      await user.send({ embeds: [embed] });
-      console.log(`[DM] Sent to ${user.tag} (${discordId}).`);
-    } catch (err) {
-      console.error(`[DM] Failed to send to ${discordId}:`, err.message);
-    }
-  }
-
-  res.sendStatus(200);
-});
-
-app.get('/health', (req, res) => res.send('ok'));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`[Webhook] Server listening on port ${PORT}`);
-});
