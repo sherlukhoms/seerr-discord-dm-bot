@@ -27,20 +27,35 @@ your Seerr notifications already use.
 4. **OAuth2 → URL Generator**: scope `bot`, no permissions required → use
    the generated URL to invite the bot to your server
 
-## 2. Build the image
+## 2. Get the image
 
-Push this repo to GitHub. A GitHub Action
+The simplest option: just use the already-published public image, no
+forking or building required:
+
+```
+ghcr.io/sherlukhoms/seerr-discord-dm-bot:latest
+```
+
+This is the same image used in the examples below — you only need your own
+Discord bot token (step 1) and your own `WEBHOOK_SECRET`, nothing else.
+
+<details>
+<summary>Want to modify the code instead of just using it?</summary>
+
+Fork this repo, then push to your fork. The included GitHub Action
 (`.github/workflows/docker-publish.yml`) automatically builds and publishes
-the image to GitHub Container Registry on every push to `main`.
+*your* version to *your own* GitHub Container Registry namespace on every
+push to `main`:
 
-1. Push to GitHub, check the **Actions** tab for a green checkmark
-2. On GitHub → your repo → **Packages** sidebar → `seerr-discord-dm-bot` →
+1. Push to your fork, check the **Actions** tab for a green checkmark
+2. On GitHub → your fork → **Packages** sidebar → `seerr-discord-dm-bot` →
    **Package settings** → set visibility to **Public** (the image has no
-   secrets baked in — the token is injected at runtime — so this is safe;
-   otherwise you'd need to add registry credentials wherever you deploy)
+   secrets baked in — the token is injected at runtime — so this is safe)
 
-You now have a ready-to-use image at
-`ghcr.io/<your-username>/seerr-discord-dm-bot:latest`.
+You'll then have your own image at
+`ghcr.io/<your-username>/seerr-discord-dm-bot:latest` to use instead of the
+one above.
+</details>
 
 ## 3. Deploy
 
@@ -68,9 +83,10 @@ block entirely — they'll reach each other by container name.
 Check the logs (**Containers → seerr-discord-dm-bot → Logs**) for
 `Logged in as ...` to confirm it connected.
 
-To update later: push to GitHub, wait for the Action to finish, then
-re-pull/redeploy the stack in Portainer (image tags don't auto-refresh on
-their own).
+To get future updates: re-pull/redeploy the stack in Portainer once in a
+while (image tags don't auto-refresh on their own). If you forked and
+build your own image, push your changes first and wait for the Action to
+finish before redeploying.
 
 <details>
 <summary>Other ways to run it</summary>
