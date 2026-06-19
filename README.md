@@ -74,7 +74,52 @@ attach both containers to the same Docker network, that also works; just
 remove the `ports:` mapping and declare Seerr's network as `external: true`
 in `docker-compose.yml`.
 
-## 4. Deploying via plain Docker Compose (no Portainer)
+## 4. Adding to an existing stack (recommended if you already run Seerr/Arr via Portainer)
+
+If you don't want a separate stack, you can add this bot as one more service
+inside your existing stack instead. This repo includes a GitHub Actions
+workflow (`.github/workflows/docker-publish.yml`) that automatically builds
+and publishes the image to GitHub Container Registry on every push to
+`main` — so your existing stack just references a ready-made image instead
+of building from source.
+
+1. Push to GitHub (the workflow runs automatically). Check the **Actions**
+   tab to confirm it succeeded.
+2. On GitHub, go to your repo → **Packages** (right sidebar) → the
+   `seerr-discord-dm-bot` package → **Package settings** → change
+   visibility to **Public** (simplest option, since the image itself
+   contains no secrets — the token is only injected at runtime via
+   environment variables). If you'd rather keep it private, you'll need to
+   add registry credentials in Portainer instead.
+3. In Portainer, open your **existing** stack (either via the Git editor or
+   the web editor — works the same either way) and add this service block:
+
+```yaml
+  seerr-discord-dm-bot:
+    image: ghcr.io/<github-username>/seerr-discord-dm-bot:latest
+    container_name: seerr-discord-dm-bot
+    restart: unless-stopped
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+      PORT: 3000
+    ports:
+      - "3000:3000"
+```
+
+   Replace `<github-username>` with your GitHub username, lowercase.
+
+4. In the stack's **Environment variables** section (this exists for all
+   stack types in Portainer, not just Git-based ones), add `DISCORD_BOT_TOKEN`
+   and `WEBHOOK_SECRET`.
+5. Update/redeploy the stack.
+
+To ship a code update later: push to GitHub, wait for the Action to finish,
+then in Portainer use **Pull and redeploy** (or, for image-based services,
+make sure "always pull image" / re-pull is enabled, since `latest` won't
+auto-refresh otherwise).
+
+## 5. Deploying via plain Docker Compose (no Portainer)
 
 ```bash
 docker compose up -d --build
@@ -82,7 +127,7 @@ docker compose up -d --build
 
 (Make sure `.env` exists locally with `DISCORD_BOT_TOKEN` set, as in step 2.)
 
-## 5. Configure Seerr
+## 6. Configure Seerr
 
 Settings → Notifications → enable **Webhook** (not the Discord agent!).
 
@@ -118,7 +163,7 @@ Test with **Test Notification** in the Seerr settings — the bot will just
 acknowledge it in the logs (`TEST_NOTIFICATION` doesn't contain a real
 Discord ID).
 
-## 6. Requirement on the user side
+## 7. Requirement on the user side
 
 Every user who should receive DMs must link their own Discord account in
 Seerr under **Settings → Notifications → Discord**. Without that link, there
