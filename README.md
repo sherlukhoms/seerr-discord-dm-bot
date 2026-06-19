@@ -111,12 +111,27 @@ one can only post to a channel, it can't DM).
 Test with the **Test Notification** button in Seerr — the bot just
 acknowledges it in the logs (a test has no real Discord ID attached).
 
+> **Important:** Also keep Seerr's built-in **Discord** notification agent
+> (Settings → Notifications → Discord) **enabled**, even though you don't
+> need its channel posts. The personal "Discord" tab in a user's own
+> notification settings — where they enter their Discord ID (see step 5) —
+> only shows up if this agent is enabled. Disable it and users lose the
+> ability to link their Discord account at all.
+>
+> Tip: rather than spamming a public channel, create a private channel
+> only the admin can see, and point the Discord agent's webhook there. That
+> way the admin still gets push notifications as a fallback/overview, while
+> regular users only get the clean DM from this bot.
+
 ## 5. One thing every user has to do themselves
 
 Each user who wants to receive DMs must link their own Discord account in
 Seerr, under their personal **Settings → Notifications → Discord** (this is
 a per-user setting, not something an admin can do for them). Without it,
 the bot just logs a warning and moves on.
+
+This tab only appears if the admin-level Discord agent is enabled — see the
+note in step 4.
 
 ## Notes
 
