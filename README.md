@@ -138,38 +138,13 @@ Settings → Notifications → enable **Webhook** (not the Discord agent!).
 - **Webhook URL:** `http://<server-ip>:3000/seerr-webhook`
   (or `http://seerr-discord-dm-bot:3000/seerr-webhook` if on the same Docker network)
 - **Authorization Header:** your `WEBHOOK_SECRET` (optional but recommended)
-- **JSON Payload:** replace the default payload with:
-
-```json
-{
-  "notification_type": "{{notification_type}}",
-  "event": "{{event}}",
-  "subject": "{{subject}}",
-  "message": "{{message}}",
-  "image": "{{image}}",
-  "media_status": "{{media_status}}",
-  "requestedBy_username": "{{requestedBy_username}}",
-  "requestedBy_avatar": "{{requestedBy_avatar}}",
-  "requestedBy_discordId": "{{requestedBy_settings_discordId}}"
-}
-```
-
-Note: depending on your Seerr version, the variable is either
-`{{requestedBy_settings_discordId}}` (singular, a plain string — this is
-what most current Seerr/Jellyseerr deployments use, check your own
-"Webhook" notification settings page for the actual default payload to be
-sure) or `{{requestedBy_settings_discordIds}}` (plural, a JSON array, per
-the newer docs.seerr.dev docs). The bot handles both automatically, so
-either works — just use whichever variable name your version's default
-payload actually shows. If you use the plural array form, drop the quotes
-around it, since Seerr inserts an actual JSON array there (e.g.
-`["123456789012345678"]`) rather than a string.
+- **JSON Payload:** leave Seerr's stock default payload as-is — no edits
+  needed. The bot reads the requester's Discord ID(s) directly from the
+  nested `request.requestedBy_settings_discordIds` field that Seerr's
+  `{{request}}` special variable already provides.
 
 - Enable the notification types you care about (Request Pending Approval,
-  Request Approved, Request Declined, Request Available, ...). According to
-  Seerr's docs, the `requestedBy_*` variables are available for **all**
-  request notification types, regardless of whether `notifyuser_*` is
-  restricted for that type.
+  Request Approved, Request Declined, Request Available, ...).
 
 Test with **Test Notification** in the Seerr settings — the bot will just
 acknowledge it in the logs (`TEST_NOTIFICATION` doesn't contain a real
