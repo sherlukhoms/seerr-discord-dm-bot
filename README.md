@@ -89,11 +89,12 @@ of building from source.
 1. Push to GitHub (the workflow runs automatically). Check the **Actions**
    tab to confirm it succeeded.
 2. On GitHub, go to your repo → **Packages** (right sidebar) → the
-   `seerr-discord-dm-bot` package → **Package settings** → change
-   visibility to **Public** (simplest option, since the image itself
-   contains no secrets — the token is only injected at runtime via
-   environment variables). If you'd rather keep it private, you'll need to
-   add registry credentials in Portainer instead.
+   `seerr-discord-dm-bot` package (direct link once it exists:
+   https://github.com/sherlukhoms/seerr-discord-dm-bot/pkgs/container/seerr-discord-dm-bot)
+   → **Package settings** → change visibility to **Public** (simplest
+   option, since the image itself contains no secrets — the token is only
+   injected at runtime via environment variables). If you'd rather keep it
+   private, you'll need to add registry credentials in Portainer instead.
 3. In Portainer, open your **existing** stack (either via the Git editor or
    the web editor — works the same either way) and add this service block:
 
@@ -149,12 +150,20 @@ Settings → Notifications → enable **Webhook** (not the Discord agent!).
   "media_status": "{{media_status}}",
   "requestedBy_username": "{{requestedBy_username}}",
   "requestedBy_avatar": "{{requestedBy_avatar}}",
-  "requestedBy_discordIds": {{requestedBy_settings_discordIds}}
+  "requestedBy_discordId": "{{requestedBy_settings_discordId}}"
 }
 ```
 
-Important: `requestedBy_discordIds` **without** quotes, since Seerr inserts
-an actual JSON array there (e.g. `["123456789012345678"]`).
+Note: depending on your Seerr version, the variable is either
+`{{requestedBy_settings_discordId}}` (singular, a plain string — this is
+what most current Seerr/Jellyseerr deployments use, check your own
+"Webhook" notification settings page for the actual default payload to be
+sure) or `{{requestedBy_settings_discordIds}}` (plural, a JSON array, per
+the newer docs.seerr.dev docs). The bot handles both automatically, so
+either works — just use whichever variable name your version's default
+payload actually shows. If you use the plural array form, drop the quotes
+around it, since Seerr inserts an actual JSON array there (e.g.
+`["123456789012345678"]`) rather than a string.
 
 - Enable the notification types you care about (Request Pending Approval,
   Request Approved, Request Declined, Request Available, ...). According to
