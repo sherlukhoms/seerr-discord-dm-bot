@@ -15,7 +15,7 @@ to the requesting user — instead of posting them publicly in a text channel.
 3. The bot builds an embed (title, description, Requested By / Request
    Status, poster as thumbnail) and sends it as a DM.
 
-**Requirement:** The bot must share at least one server (guild) with the
+**Requirement:** The bot must share at least one server with the
 user, otherwise Discord rejects the DM. Invite the bot to the same server
 your Seerr notifications already use.
 
